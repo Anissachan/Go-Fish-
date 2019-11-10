@@ -17,9 +17,9 @@ Card::Card(int rank, Card::Suit s) {
 }
 
 string Card::toString() const {
-    string _string;
-    _string = to_string();
-    return(_string);
+    string output = rankString(myRank);
+    output += suitString(mySuit);
+    return output;
 }
 
 bool Card::sameSuitAs(const Card &c) const {
@@ -31,13 +31,34 @@ int Card::getRank() const {
     return myRank;
 }
 
-string Card::suitString(Suit s) const {
-    return (to_string(s));
+string Card::suitString(Card::Suit s) const {
+    string output = " ";
+    if(s == spades)
+        output = "s";
+    else if(s == hearts)
+        output = "h";
+    else if(s == clubs)
+        output = "c";
+    else output = "d";
+
+    return output;
 }
 
 string Card::rankString(int r) const {
-    return (to_string(r));
+    string output = " ";
+
+    if(r == 1)
+        output = "A";
+    else if(r == 11)
+        output = "J";
+    else if(r == 12)
+        output = "Q";
+    else if(r == 13)
+        output = "K";
+
+    return output;
 }
+
 
 bool Card::operator==(const Card &rhs) const {
     if(myRank == rhs.myRank && mySuit == rhs.mySuit)
