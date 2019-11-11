@@ -88,13 +88,13 @@ bool Player::cardInHand(Card c) const {
 }
 
 string Player::showBooks() const {
-    string book;
-    for(Card book: myBook){
-        book = book.toString() + "";
+    vector<Card>::const_iterator i;
+    string output;
+    for(i=myBook.begin(); i!=myBook.end(); i++){
+        output = output + (*i).toString() + " ";
     }
-    return book;
+    return output;
 }
-
 
 
 
