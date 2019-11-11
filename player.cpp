@@ -1,8 +1,9 @@
 #include "player.h"
 #include "card.h"
 #include "deck.h"
-#include <iterator>
+#include <vector>
 #include <ctime>
+#include <algorithm>
 
 using namespace std;
 
@@ -15,21 +16,18 @@ void Player::addCard(Card c) {
 }
 
 void Player::bookCards(Card c1, Card c2) {
-    myBook.push_back(c1);
-    myBook.push_back(c2);
-    removeCardFromHand(c1);
-    removeCardFromHand(c2);
+    myBook.push_back(removeCardFromHand(c1));
+    myBook.push_back(removeCardFromHand(c2));
+
 }
 
 Card Player::removeCardFromHand(Card c) {
     Card temp;
-    vector<Card>::iterator i ;
-    for( i = myHand.begin(); i<myHand.end(); i++){
-        temp = *i;
-        myHand.erase(i);
-        return temp;
-    }
-
+    vector<Card>::iterator i;
+    i = find(myHand.begin(), myHand.end(), c);
+    temp = *i;
+    myHand.erase(i);
+    return temp;
 }
 
 int Player::getHandSize() const {
@@ -48,7 +46,7 @@ string Player::showHand() const {
     return hand;
 }
 
-bool Player::rankInHand(Card c) const {
+bool Player::sameRankInHand(Card c) const {
     bool found = false;
     for(Card card: myHand){
         if(c.getRank() == card.getRank()){
@@ -62,20 +60,21 @@ bool Player::checkHandForPair(Card &c1, Card &c2) {
     vector<Card>::const_iterator i1;
     vector<Card>::const_iterator i2;
 
-    for(i1 = myHand.begin(); i1 < myHand.end(); i1++){
-        for(i2 = i1+1; i2 < myHand.end(); i2++){
-            if((*i1).getRank() == (*i2).getRank()){
-                c1 = *i1;
-                c2 = *i2;
+    for(int i =0; i < myHand.size() - 1; i++){
+        for(int j = 1; j < myHand.size(); j++){
+            if(myHand.at(i).getRank() == myHand.at(j).getRank()){
+                c1 = myHand.at(i);
+                c2 = myHand.at(j);
                 return true;
             }
         }
     }
+    return false;
 }
 
 Card Player::chooseCardFromHand() const {
     srand(time(NULL));
-    return myHand[(rand() % getHandSize())];
+    return myHand.at((rand() % getHandSize()));
 }
 
 bool Player::cardInHand(Card c) const {
@@ -95,6 +94,7 @@ string Player::showBooks() const {
     }
     return output;
 }
+
 
 
 
