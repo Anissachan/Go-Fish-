@@ -1,17 +1,14 @@
-//
-// Created by aniss on 11/9/2019.
-//
-#include "card.h"
 #include <string>
+#include "card.h"
 
 using namespace std;
 
-Card::Card(){
-    myRank = 1;         //the default card is the ACE of Spades
+Card::Card() {
+    myRank = 1;
     mySuit = spades;
 }
 
-Card::Card(int rank, Card::Suit s) {
+Card::Card(int rank, Suit s){
     myRank = rank;
     mySuit = s;
 }
@@ -23,8 +20,7 @@ string Card::toString() const {
 }
 
 bool Card::sameSuitAs(const Card &c) const {
-    if(mySuit == c.mySuit)
-        return true;
+    return c.mySuit == mySuit;
 }
 
 int Card::getRank() const {
@@ -49,6 +45,24 @@ string Card::rankString(int r) const {
 
     if(r == 1)
         output = "A";
+    else if(r == 2)
+        output = "2";
+    else if(r == 3)
+        output = "3";
+    else if(r == 4)
+        output = "4";
+    else if(r == 5)
+        output = "5";
+    else if(r == 6)
+        output = "6";
+    else if(r == 7)
+        output = "7";
+    else if(r == 8)
+        output = "8";
+    else if(r == 9)
+        output = "9";
+    else if(r == 10)
+        output = "10";
     else if(r == 11)
         output = "J";
     else if(r == 12)
@@ -59,7 +73,6 @@ string Card::rankString(int r) const {
     return output;
 }
 
-
 bool Card::operator==(const Card &rhs) const {
     if(myRank == rhs.myRank && mySuit == rhs.mySuit)
         return true;
@@ -69,4 +82,6 @@ bool Card::operator!=(const Card &rhs) const {
     if(myRank != rhs.myRank || (myRank == rhs.myRank && mySuit != rhs.mySuit))
         return true;
 }
+
+
 
