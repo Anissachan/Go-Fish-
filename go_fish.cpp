@@ -32,6 +32,29 @@ int main(){
 
 }
 
+string print(Player p, int turn, Card card){
+    string message;
+    string Message[5] = {": Do you have a ", " : Go Fish", "draws", ": Yes, I have a ", ": books the "};
+
+    if(turn == ASK)
+        message = p.getName() + Message[0] + card.rankString(card.getRank()) + "?" ;
+
+    if(turn == GOFISH)
+        message  = p.getName() + Message[1];
+
+    if(turn == DRAW)
+        message = p.getName() + Message[2] + card.toString();
+
+    if(turn == YES)
+        message = p.getName() + Message[3] + card.rankString(card.getRank());
+
+    if(turn == BOOK)
+        message = p.getName() + Message[4] + card.rankString(card.getRank());
+
+    return message;
+
+}
+
 void dealHand(Deck &d, Player &p, int numCards)
 {
     for (int i=0; i < numCards; i++)
