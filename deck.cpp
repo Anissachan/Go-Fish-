@@ -41,11 +41,14 @@ void Deck::dealHand(Deck &d, Player &p, int numCards)
 }
 
 Card Deck::dealCard() {
-    while(myIndex <= 52)
-    myIndex++;
+    Card card(0,Card::Suit(0));
+    if(size() > 0){
+        card = myCards[myIndex];
+        myIndex++;
+    }
+    return card;
 }
 
 int Deck::size() const {
-    Player handCard;
-    int handSize = handCard.getHandSize();
+    return SIZE - myIndex;
 }
