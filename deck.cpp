@@ -1,43 +1,36 @@
-//
-// Created by aniss on 11/9/2019.
-//
-#include <iostream>
-#include <ctime>
+#include "player.h"
 #include "deck.h"
 #include "card.h"
-#include "player.h"
+#include <ctime>
 
 using namespace std;
 
 Deck::Deck() {
-    unsigned int currentTime = (unsigned)time(0);
-    srand(currentTime);
-    //int _rank;
-    //string suit;
-    for(int i = 0; i < 4; i++) {
-        for(int j = 0; j < 52; j++){
-            Card(j, i);
+    myIndex = 0;
+
+    int suit;
+    int rank;
+    int index = 0;
+
+    for(suit = 0; suit<4; suit++){
+        for(rank = 1; rank<14; rank++){
+            myCards[index] = Card(rank, Card::Suit(suit));
+            index++;
         }
     }
 }
 
 void Deck::shuffle() {
+    srand(time(NULL));
 
-    for(int i = 0; i < 52; i++) {
-        int index1 = (rand() % 13) + 1;
-        int index2 = (rand() % 13) + 1;
+    for(int i=0; i<size(); i++){
+        int i1 = rand()%size();
+        int i2 = rand()%size();
 
-        Card tempCard = myCards[index1];
-        myCards[index1] = myCards[index2];
-        myCards[index2] = tempCard;
-
+        Card temp = myCards[i1];
+        myCards[i1] = myCards[i2];
+        myCards[i2] = temp;
     }
-}
-
-void Deck::dealHand(Deck &d, Player &p, int numCards)
-{
-    for (int i=0; i < numCards; i++)
-        p.addCard(d.dealCard());
 }
 
 Card Deck::dealCard() {
