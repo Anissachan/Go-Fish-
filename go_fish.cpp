@@ -10,13 +10,14 @@ void dealHand(Deck &d, Player &p, int numCards);
 string print(Player p, int turn, Card card);
 Player* playerTurn(int player_turn, Player *p1, Player *p2);
 
-int current_turn = 1;
+int current_turn = 0;
 
 const int ASK = 0;
 const int GOFISH = 1;
 const int DRAW = 2;
 const int YES = 3;
 const int BOOK = 4;
+const int WIN = 5;
 
 int main(){
     ofstream file("gofish_results.txt");
@@ -33,12 +34,16 @@ int main(){
 
     if(file.is_open()){
         file<<"Starting game"<<endl;
+        cout<<"Starting game"<<endl;
     }
 
     file<<p1.getName()<<"'s hand: "<<p1.showHand()<<endl;
     file<<p2.getName()<<"'s hand: "<<p2.showHand()<<endl;
     file<<p1.getName()<<"'s book: "<<p1.showBooks()<<endl;
     file<<p2.getName()<<"'s book: "<<p2.showBooks()<<endl<<endl;
+
+    cout<<p1.getName()<<"'s hand: "<<p1.showHand()<<endl;
+    cout<<p2.getName()<<"'s hand: "<<p2.showHand()<<endl;
 
     while(p1.checkHandForPair(c1, c2)){
         p1.bookCards(c1, c2);
@@ -50,64 +55,74 @@ int main(){
         file<<p2.getName()<<" has a pair "<<p2.showBooks()<<endl<<endl;
     }
 
-    while(d.size() != 0){
+    while(d.size() != 0) {
         string message;
 
-        Player* currentPlayer = playerTurn(current_turn, &p1, &p2);
-        Player* otherPlayer = playerTurn(1-current_turn, &p1, &p2);
+        Player *currentPlayer = playerTurn(current_turn, &p1, &p2);
+        Player *otherPlayer = playerTurn(1 - current_turn, &p1, &p2);
 
-        file<<p1.getName()<<"'s hand: "<<p1.showHand()<<endl;
-        file<<p2.getName()<<"'s hand: "<<p2.showHand()<<endl;
-        file<<p1.getName()<<"'s book: "<<p1.showBooks()<<endl;
-        file<<p2.getName()<<"'s book: "<<p2.showBooks()<<endl<<endl;
+        file << p1.getName() << "'s hand: " << p1.showHand() << endl;
+        file << p2.getName() << "'s hand: " << p2.showHand() << endl;
+        file << p1.getName() << "'s book: " << p1.showBooks() << endl;
+        file << p2.getName() << "'s book: " << p2.showBooks() << endl << endl;
 
         currentCard = currentPlayer->chooseCardFromHand();
         message = print(*currentPlayer, ASK, currentCard);
-        file<<message<<endl;
+        file << message << endl;
 
-        if(otherPlayer->sameRankInHand(currentCard)){
-            message = print(*otherPlayer, YES, currentCard);
-            file<<message<<endl<<endl;
-            otherPlayer->removeCardFromHand(currentCard);
-            currentPlayer->addCard(currentCard);
-            if(currentPlayer->checkHandForPair(c1, c2)){
+        if (otherPlayer->sameRankInHand(currentCard)) {
+            Card anotherCard = otherPlayer->getSameCard(currentCard);
+            message = print(*otherPlayer, YES, anotherCard);
+            file << message << endl << endl;
+            otherPlayer->removeCardFromHand(anotherCard);
+            currentPlayer->addCard(anotherCard);
+            if (currentPlayer->checkHandForPair(c1, c2)) {
                 currentPlayer->bookCards(c1, c2);
-                message = print(*currentPlayer, BOOK, currentCard);
-                file<<message<<endl;
+                message = print(*currentPlayer, BOOK, anotherCard);
+                file << message << endl;
             }
-
-
-        }
-        else {
+            current_turn = 1 - current_turn;
+        } else {
             message = print(*otherPlayer, GOFISH, currentCard);
-            file<<message<<endl<<endl;
+            file << message << endl << endl;
             Card newCard = d.dealCard();
             currentPlayer->addCard(newCard);
             message = print(*currentPlayer, DRAW, newCard);
-            file<<message<<endl;
-            if(currentPlayer->checkHandForPair(c1, c2)){
+            file << message << endl;
+            if (currentPlayer->checkHandForPair(c1, c2)) {
                 currentPlayer->bookCards(c1, c2);
-                message = print(*currentPlayer, BOOK, currentCard);
-                file<<message<<endl;
+                message = print(*currentPlayer, BOOK, newCard);
+                file << message << endl;
             }
-
+            current_turn = 1 - current_turn;
         }
 
-
-        break;
-
-
+        if (currentPlayer->getHandSize() == 0 && d.size() != 0)
+            currentPlayer->addCard(d.dealCard());
+        if (otherPlayer->getHandSize() == 0 && d.size() != 0) {
+            otherPlayer->addCard(d.dealCard());
+        }
 
     }
+
+    if(p1.getBookSize() > p2.getBookSize()){
+        string message = print(p1, WIN, currentCard);
+        file<<message<<endl;
+    } else {
+        string message = print(p2, WIN, currentCard);
+        file<<message<<endl;
+    }
+
+    file.close();
+
 }
 
 string print(Player p, int turn, Card card){
     string message;
-    Card::Suit s;
-    string Message[5] = {": Do you have a ", " : Go Fish", " draws ", ": Yes, I have a ", " books the "};
+    string Message[6] = {": Do you have a ", " : Go Fish", " draws ", ": Yes, I have a ", " books the ", " wins!"};
 
     if(turn == ASK)
-        message = p.getName() + Message[0] + card.rankString(card.getRank()) + card.suitString(s) + "?" ;
+        message = p.getName() + Message[0] + card.toString()+ "?" ;
 
     if(turn == GOFISH)
         message  = p.getName() + Message[1];
@@ -116,10 +131,13 @@ string print(Player p, int turn, Card card){
         message = p.getName() + Message[2] + card.toString();
 
     if(turn == YES)
-        message = p.getName() + Message[3] + card.rankString(card.getRank());
+        message = p.getName() + Message[3] + card.toString();
 
     if(turn == BOOK)
-        message = p.getName() + Message[4] + card.rankString(card.getRank()) + card.suitString(s) ;
+        message = p.getName() + Message[4] + card.toString() ;
+
+    if(turn == WIN)
+        message = p.getName() + Message[5];
 
     return message;
 
