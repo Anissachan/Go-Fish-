@@ -33,6 +33,7 @@ void Player::bookCards(Card c1, Card c2){
     }
 }
 
+
 Card Player::removeCardFromHand(Card c) {
     Card temp;
     vector<Card>::iterator i;
@@ -69,14 +70,15 @@ bool Player::sameRankInHand(Card c) const {
 }
 
 bool Player::checkHandForPair(Card &c1, Card &c2) {
-    vector<Card>::const_iterator i1;
-    vector<Card>::const_iterator i2;
+    Card _c1, _c2;
 
-    for(int i =0; i < myHand.size() - 1; i++){
-        for(int j = i + 1; j != myHand.size(); j++){
-            if(myHand.at(i).getRank() == myHand.at(j).getRank()){
-                c1 = myHand.at(i);
-                c2 = myHand.at(j);
+    for(int i = 0; i< myHand.size(); i++){
+        _c1 = myHand.at(i);
+        for(int j = i+1; j<myHand.size(); j++){
+            _c2 = myHand.at(j);
+            if(_c1.getRank() == _c2.getRank()){
+                c1 = _c1;
+                c2 = _c2;
                 return true;
             }
         }
@@ -106,6 +108,9 @@ string Player::showBooks() const {
     }
     return output;
 }
+
+
+
 
 
 
