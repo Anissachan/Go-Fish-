@@ -73,7 +73,7 @@ bool Player::checkHandForPair(Card &c1, Card &c2) {
     vector<Card>::const_iterator i2;
 
     for(int i =0; i < myHand.size() - 1; i++){
-        for(int j = 1; j < myHand.size(); j++){
+        for(int j = i + 1; j != myHand.size(); j++){
             if(myHand.at(i).getRank() == myHand.at(j).getRank()){
                 c1 = myHand.at(i);
                 c2 = myHand.at(j);
