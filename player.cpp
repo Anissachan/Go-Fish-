@@ -15,10 +15,22 @@ void Player::addCard(Card c) {
     myHand.push_back(c);
 }
 
-void Player::bookCards(Card c1, Card c2) {
-    myBook.push_back(removeCardFromHand(c1));
-    myBook.push_back(removeCardFromHand(c2));
-
+void Player::bookCards(Card c1, Card c2){
+    vector<Card>::iterator i1, i2;
+    for (i1 = myHand.begin(); i1 != myHand.end(); i1++){
+        if (*i1 == c1){
+            myBook.push_back(c1);
+            myHand.erase(i1);
+            break;
+        }
+    }
+    for (i2 = myHand.begin(); i2 != myHand.end(); i2++){
+        if (*i2 == c2){
+            myBook.push_back(c2);
+            myHand.erase(i2);
+            break;
+        }
+    }
 }
 
 Card Player::removeCardFromHand(Card c) {
